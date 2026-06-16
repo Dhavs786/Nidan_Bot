@@ -163,13 +163,23 @@ def generate_offline_fallback(message: str, search_results: List[Dict[str, Any]]
 
 @app.post("/api/chat")
 async def chat_diagnose(req: ChatRequest):
-    # Determine LLM Provider
-    provider = os.environ.get("LLM_PROVIDER", "gemini").lower()
-    api_key = req.api_key or os.environ.get("GEMINI_API_KEY")
-    
+    # Determine LLM Provider with smart auto-detection
+    provider = os.environ.get("LLM_PROVIDER")
+    if not provider:
+        if os.environ.get("GROQ_API_KEY") or (req.api_key and req.api_key.startswith("gsk_")):
+            provider = "groq"
+        elif os.environ.get("OPENROUTER_API_KEY"):
+            provider = "openrouter"
+        else:
+            provider = "gemini"
+    else:
+        provider = provider.lower()
+        
     # Auto-detect Groq keys from client input
     if req.api_key and req.api_key.startswith("gsk_"):
         provider = "groq"
+        
+    api_key = req.api_key or os.environ.get("GEMINI_API_KEY")
     
     # Run RAG Search to get relevant disease files
     search_results = search_engine.search(req.message, top_n=3)
