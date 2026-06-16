@@ -11,6 +11,27 @@ from search_engine import NidanaSearchEngine
 
 # Load environment variables
 load_dotenv()
+backend_env_path = os.path.join(os.path.dirname(__file__), ".env")
+if os.path.exists(backend_env_path):
+    load_dotenv(dotenv_path=backend_env_path)
+
+# Automatically load API key from root api.txt if present
+api_txt_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "api.txt")
+if os.path.exists(api_txt_path):
+    try:
+        with open(api_txt_path, "r", encoding="utf-8") as f:
+            key_content = f.read().strip()
+            if key_content:
+                if key_content.startswith("gsk_"):
+                    os.environ["GROQ_API_KEY"] = key_content
+                    os.environ["LLM_PROVIDER"] = "groq"
+                    print("Auto-configured Groq from api.txt")
+                elif key_content.startswith("AIzaSy"):
+                    os.environ["GEMINI_API_KEY"] = key_content
+                    os.environ["LLM_PROVIDER"] = "gemini"
+                    print("Auto-configured Gemini from api.txt")
+    except Exception as e:
+        print(f"Error reading api.txt: {e}")
 
 app = FastAPI(title="NIdan_bot API", description="Ayurvedic Diagnostics RAG & Chatbot Backend")
 
