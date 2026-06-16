@@ -1,0 +1,49 @@
+# Credentials & Secrets
+api.txt
+.env
+**/.env
+**/api.txt
+
+# Executables & Large Binaries
+*.exe
+*.epub
+*.zip
+*.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+devenv.local.nix
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Production Build Directories
+dist/
+build/
+out/
+
+# IDE / Editor configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS metadata
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1028 @@
+import json
+import os
+
+def build_disease_database():
+    diseases = [
+        # --- JVARA (FEVERS) ---
+        {
+            "roga": "Vataja Jvara",
+            "lakshana": [
+                "Vepathu (Shivering/Tremors)",
+                "Visama Vega (Fluctuating/Irregular fever spikes)",
+                "Kantha-ostha-parisosanam (Dryness of throat and lips)",
+                "Nidranasa (Insomnia)",
+                "Ksavastambha (Suppression of sneezing)",
+                "Gatranam Rauksyam (Dryness of body skin)",
+                "Siro-ruk (Headache)",
+                "Hrd-ruk (Precordial/Chest pain)",
+                "Gatra-ruk (Body aches/Myalgia)",
+                "Vaktra-vairasyam (Altered/Astringent taste in mouth)",
+                "Gadha-vitkata (Constipation/Hard stools)"
+            ],
+            "nidana": [
+                "Ruksa ahara (Dry foods)",
+                "Sita ahara (Cold foods/drinks)",
+                "Alpa ahara (Inadequate food intake)",
+                "Laghu ahara (Light food)",
+                "Vyavaya (Excessive sexual activity)",
+                "Prajagara (Excessive night awakening)",
+                "Srama (Physical over-exertion)"
+            ],
+            "purvarupa": [
+                "Srama (Weariness/Fatigue)",
+                "Arati (Restlessness)",
+                "Vivarnata (Discoloration of skin)",
+                "Asyavairasyam (Altered taste)",
+                "Nayanadaha (Burning sensation in eyes)"
+            ],
+            "rupa": [
+                "Vepathu (Shivering)",
+                "Visama Jvara Vega (Fluctuating body temperature)",
+                "Kantha-ostha parioshanam (Dry throat and lips)",
+                "Gadha-vitkata (Constipation)"
+            ],
+            "upashaya": [
+                "Ushna upachara (Warm environment, warm water)",
+                "Snigdha ahara (Unctuous/Oily warm food)",
+                "Madhura, Amla, Lavana rasa (Sweet, sour, salty foods)"
+            ],
+            "anupashaya": [
+                "Sita ahara-vihara (Cold food/exposure)",
+                "Ruksa upachara (Dry treatments/dehydrating food)",
+                "Katu, Tikta, Kasaya rasa (Pungent, bitter, astringent tastes)"
+            ],
+            "dosha": ["Vata"],
+            "dushya": ["Rasa", "Sweda"],
+            "srotas": ["Rasavaha Srotas", "Swedavaha Srotas"],
+            "agni": ["Visamagni"],
+            "ama": ["Sama (associated with ama in early stages)"],
+            "samprapti": "Vitiated Vata enters the Amasaya (stomach), mixes with Rasa Dhatu, blocks the Rasavaha and Swedavaha channels, suppresses Agni (digestive fire), and displaces the body heat outwards, causing fever.",
+            "bheda": [],
+            "sadhya_asadhyata": "Sadhya (Curable)",
+            "pathya": [
+                "Laghu Peya (Light gruels)",
+                "Shadanga Paniya (Water boiled with Musta, Parpata, Ushira, Chandana, Udirchya, Nagar)",
+                "Langhana (Fasting/Light eating)"
+            ],
+            "apathya": [
+                "Snigdha bhojana (Heavy/fatty foods)",
+                "Sita jala (Cold water)",
+                "Krodha (Anger)",
+                "Maithuna (Sexual intercourse)",
+                "Divasvapna (Day sleeping)"
+            ],
+            "related_diseases": ["Visama Jvara", "Vatavyadhi"],
+            "chikitsa_references": ["CS. Ci. 3.142", "AH. Ci. 1.76"],
+            "classical_references": ["MN. 2.8", "SS. Ut. 39.42"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Vepathu", "modern_equivalents": ["Shivering", "Tremors", "Rigors"]},
+                {"ayurvedic_term": "Visama Vega", "modern_equivalents": ["Fluctuating fever", "Intermittent pyrexia"]},
+                {"ayurvedic_term": "Kantha-ostha-parisosanam", "modern_equivalents": ["Dryness of throat", "Dry lips", "Dehydration"]},
+                {"ayurvedic_term": "Nidranasa", "modern_equivalents": ["Insomnia", "Sleeplessness"]},
+                {"ayurvedic_term": "Siro-ruk", "modern_equivalents": ["Headache"]},
+                {"ayurvedic_term": "Gatra-ruk", "modern_equivalents": ["Body aches", "Myalgia"]},
+                {"ayurvedic_term": "Gadha-vitkata", "modern_equivalents": ["Constipation", "Hard stools"]}
+            ],
+            "retrieval_document": "Disease: Vataja Jvara (Vata type Fever). Symptoms: Shivering, tremors, irregular high temperature, dry throat and lips, sleeplessness, lack of sneezing, dry skin, headache, body aches, altered taste, constipation. Causes: Dry, cold, light food, excessive night awakening, exertion. Dosha: Vata. Dushya: Rasa. Srotas: Rasavaha, Swedavaha. Samprapti: Vata enters stomach, impairs Rasa, blocks sweat channels, displaces digestive fire, causing fever. References: MN. 2.8, CS. Ci. 3.",
+            "confidence": 1.0
+        },
+        {
+            "roga": "Pittaja Jvara",
+            "lakshana": [
+                "Jvara-vega tikshna (High-grade fever)",
+                "Atisarana (Loose stools/Diarrhoea)",
+                "Nidra-nasa (Sleeplessness)",
+                "Vamathu (Vomiting)",
+                "Kantha-ostha-mukha-talu-paka (Ulceration/inflammation of throat, lips, mouth, palate)",
+                "Sveda-pravrtti (Excessive sweating)",
+                "Pralapa (Delirium)",
+                "Mukha-katuka (Bitter taste in mouth)",
+                "Murccha (Fainting/Syncope)",
+                "Daha (Burning sensation all over body)",
+                "Trsna (Excessive thirst)",
+                "Rakta-vit-mutratvam (Yellowish-red discoloration of feces and urine)"
+            ],
+            "nidana": [
+                "Katu, Amla, Lavana ahara (Pungent, sour, salty foods)",
+                "Usna, Tiksna ahara (Hot, sharp foods)",
+                "Krodha (Anger)",
+                "Atapa-sevana (Sun exposure)",
+                "Agni-sevana (Exposure to fire/heat)",
+                "Ajirna-bhojana (Eating before previous meal is digested)"
+            ],
+            "purvarupa": [
+                "Nayanadaha (Burning in eyes)",
+                "Mukha-vairasya (Bad taste)",
+                "Sveda-bahulya (Increased sweating)",
+                "Aruci (Anorexia)"
+            ],
+            "rupa": [
+                "Tiksna Jvara (High fever)",
+                "Daha (Burning sensation)",
+                "Trsna (Thirst)",
+                "Murccha (Fainting)"
+            ],
+            "upashaya": [
+                "Sita upachara (Cold compresses, cold environment)",
+                "Madhura, Tikta, Kasaya rasa (Sweet, bitter, astringent foods)",
+                "Sita paniya (Cold drinks/water)"
+            ],
+            "anupashaya": [
+                "Usna upachara (Warm environment/compresses)",
+                "Amla, Katu, Lavana rasa (Sour, pungent, salty foods)",
+                "Atapa (Sun exposure)"
+            ],
+            "dosha": ["Pitta"],
+            "dushya": ["Rakta", "Rasa"],
+            "srotas": ["Rasavaha Srotas", "Swedavaha Srotas", "Raktavaha Srotas"],
+            "agni": ["Tikshnagni"],
+            "ama": ["Sama (early stage)"],
+            "samprapti": "Vitiated Pitta enters the digestive tract, overpowers Agni, mixes with Rasa and Rakta, blocks Swedavaha channels, and circulates throughout the body causing acute high-grade fever and burning sensation.",
+            "bheda": [],
+            "sadhya_asadhyata": "Sadhya (Curable)",
+            "pathya": [
+                "Sita Peya (Cold rice gruels)",
+                "Mudga Yusha (Mung bean soup)",
+                "Tiktaka rasa ghrita (Bitter ghee)"
+            ],
+            "apathya": [
+                "Usna ahara (Hot foods)",
+                "Madyapana (Alcohol intake)",
+                "Vyayama (Physical exercise)",
+                "Krodha (Anger)"
+            ],
+            "related_diseases": ["Daha", "Raktapitta"],
+            "chikitsa_references": ["CS. Ci. 3.145", "AH. Ci. 1.82"],
+            "classical_references": ["MN. 2.10", "SS. Ut. 39.44"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Jvara-vega tikshna", "modern_equivalents": ["High-grade fever", "Hyperpyrexia"]},
+                {"ayurvedic_term": "Atisarana", "modern_equivalents": ["Diarrhoea", "Loose stools"]},
+                {"ayurvedic_term": "Kantha-ostha-mukha-talu-paka", "modern_equivalents": ["Stomatitis", "Oral ulcers", "Glossitis"]},
+                {"ayurvedic_term": "Sveda-pravrtti", "modern_equivalents": ["Diaphoresis", "Excessive sweating"]},
+                {"ayurvedic_term": "Pralapa", "modern_equivalents": ["Delirium", "Incoherent speech"]},
+                {"ayurvedic_term": "Murccha", "modern_equivalents": ["Fainting", "Syncope", "Loss of consciousness"]},
+                {"ayurvedic_term": "Daha", "modern_equivalents": ["Burning sensation", "Heat intolerance"]}
+            ],
+            "retrieval_document": "Disease: Pittaja Jvara (Pitta type Fever). Symptoms: High-grade fever, loose stools, vomiting, mouth ulcers, excessive sweating, delirium, bitter taste, fainting, burning sensation, thirst, red-yellow urine. Causes: Spicy, sour, salty, hot food, anger, sun exposure. Dosha: Pitta. Dushya: Rakta, Rasa. Srotas: Rasavaha, Swedavaha, Raktavaha. Samprapti: Pitta vitiation blocks sweat channels, mixes with blood, causing high fever and burning. References: MN. 2.10, CS. Ci. 3.",
+            "confidence": 1.0
+        },
+        {
+            "roga": "Kaphaja Jvara",
+            "lakshana": [
+                "Jvara-vega mandam (Mild/low-grade fever)",
+                "Staimityam (Feeling of being covered by a wet cloth/dampness)",
+                "Alasya (Lethargy/Drowsiness)",
+                "Mukha-madhuryam (Sweet taste in mouth/Excessive salivation)",
+                "Hrllasa (Nausea)",
+                "Chardi (Vomiting)",
+                "Kasa (Cough)",
+                "Pratishyaya (Nasal congestion/Coryza)",
+                "Aruchi (Anorexia/Loss of appetite)",
+                "Gauravam (Feeling of heaviness in the body)",
+                "Sitata (Coldness/Chills)",
+                "Tandra (Stupor/Sleepiness)",
+                "Sukla-nayana-vit-mutratvam (Whiteness of eyes, stool, and urine)"
+            ],
+            "nidana": [
+                "Guru ahara (Heavy/hard to digest foods)",
+                "Snigdha ahara (Oily, fatty foods)",
+                "Madhura ahara (Sweet, cold foods/drinks)",
+                "Divasvapna (Sleeping during the day)",
+                "Avyayama (Lack of physical activity/Sedentary life)"
+            ],
+            "purvarupa": [
+                "Tandra (Lethargy)",
+                "Nayanaru (Whiteness of eyes)",
+                "Alasya (Laziness)",
+                "Aruci (Loss of appetite)"
+            ],
+            "rupa": [
+                "Manda Jvara (Low-grade fever)",
+                "Gaurava (Heaviness)",
+                "Hrllasa (Nausea)",
+                "Tandra (Drowsiness)"
+            ],
+            "upashaya": [
+                "Usna upachara (Dry heat, warm fluids)",
+                "Tikta, Katu, Kasaya rasa (Bitter, pungent, astringent foods)",
+                "Langhana (Fasting)",
+                "Prajagara (Keeping awake at night)"
+            ],
+            "anupashaya": [
+                "Sita upachara (Cold atmosphere, cold baths)",
+                "Madhura, Amla, Lavana rasa (Sweet, sour, salty foods)",
+                "Divasvapna (Day sleeping)"
+            ],
+            "dosha": ["Kapha"],
+            "dushya": ["Rasa", "Sweda"],
+            "srotas": ["Rasavaha Srotas", "Swedavaha Srotas"],
+            "agni": ["Mandagni"],
+            "ama": ["Sama (dominant in Kaphaja Jvara)"],
+            "samprapti": "Vitiated Kapha clogs the stomach, dampens the digestive fire (Mandagni), blocks the Rasavaha and Swedavaha channels, and manifests as low-grade fever with bodily heaviness and phlegm accumulation.",
+            "bheda": [],
+            "sadhya_asadhyata": "Sadhya (Curable)",
+            "pathya": [
+                "Langhana (Fasting/Therapeutic hunger)",
+                "Usna Udaka (Warm water)",
+                "Katu-ushna herbs (Trikatu: Ginger, Black pepper, Long pepper)"
+            ],
+            "apathya": [
+                "Madhura, Snigdha foods (Sweets, dairy, fats)",
+                "Sita jala (Cold water)",
+                "Divasvapna (Day sleeping)"
+            ],
+            "related_diseases": ["Kasa", "Pratishyaya"],
+            "chikitsa_references": ["CS. Ci. 3.149", "AH. Ci. 1.86"],
+            "classical_references": ["MN. 2.11", "SS. Ut. 39.46"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Jvara-vega mandam", "modern_equivalents": ["Low-grade fever", "Subfebrile temperature"]},
+                {"ayurvedic_term": "Staimityam", "modern_equivalents": ["Subjective dampness", "Clammy skin feeling"]},
+                {"ayurvedic_term": "Hrllasa", "modern_equivalents": ["Nausea"]},
+                {"ayurvedic_term": "Gauravam", "modern_equivalents": ["Heaviness", "Lethargy"]},
+                {"ayurvedic_term": "Sitata", "modern_equivalents": ["Chills", "Cold intolerance"]},
+                {"ayurvedic_term": "Tandra", "modern_equivalents": ["Somnolence", "Stupor", "Drowsiness"]},
+                {"ayurvedic_term": "Sukla-nayana-vit-mutratvam", "modern_equivalents": ["Pale eyes", "Clay-colored stools", "Pale urine"]}
+            ],
+            "retrieval_document": "Disease: Kaphaja Jvara (Kapha type Fever). Symptoms: Low-grade fever, feeling covered by wet cloth, lethargy, sweet taste, salivation, nausea, vomiting, cough, running nose, appetite loss, body heaviness, chills, drowsiness, pale urine. Causes: Heavy, sweet, oily food, day sleeping, sedentary lifestyle. Dosha: Kapha. Dushya: Rasa. Srotas: Rasavaha, Swedavaha. Samprapti: Kapha dampens Agni, blocks channels, leading to low-grade fever with heaviness. References: MN. 2.11, CS. Ci. 3.",
+            "confidence": 1.0
+        },
+        
+        # --- ATISARA (DIARRHOEAS) ---
+        {
+            "roga": "Vataja Atisara",
+            "lakshana": [
+                "Sula (Abdominal colic/pain before defecation)",
+                "Alpa-alpam (Passing stool in small quantities frequently)",
+                "Sabdam (Passing stool with loud flatulence/gaseous sound)",
+                "Phena-yuktam (Frothy stool)",
+                "Ruksam (Dry/unctuousless stool)",
+                "Usnam (Warm stool)",
+                "Mutrasanga (Retention of urine)",
+                "Guda-bhramsa (Prolapse of rectum in chronic cases)",
+                "Kantha-asyasosanam (Dryness of throat and mouth)",
+                "Tvac-rauksyam (Dryness of skin)"
+            ],
+            "nidana": [
+                "Ruksa, Sita, Laghu ahara (Dry, cold, light food)",
+                "Ati-maithuna (Excessive sexual activity)",
+                "Ati-vyayama (Excessive physical exercise)",
+                "Desa-kala-vaitathya (Exposure to incompatible climate/season)",
+                "Vegasandarana (Suppression of natural urges)"
+            ],
+            "purvarupa": [
+                "Hrdroga (Discomfort in heart region)",
+                "Guda-toda (Pricking pain in rectum)",
+                "Udaradhmana (Abdominal distension)",
+                "Agni-sada (Impaired digestion)"
+            ],
+            "rupa": [
+                "Frequent passing of frothy, watery, small stools with pain and sound"
+            ],
+            "upashaya": [
+                "Snigdha-ushna food (Warm unctuous food)",
+                "Madhura, Amla, Lavana food",
+                "Deepana-pachana herbs (e.g. Shunthi, Pippali)"
+            ],
+            "anupashaya": [
+                "Ruksa-sita food",
+                "Tikta, Kasaya food",
+                "Suppression of urges"
+            ],
+            "dosha": ["Vata"],
+            "dushya": ["Purisha", "Rasa", "Udaka"],
+            "srotas": ["Annavaha Srotas", "Purishavaha Srotas", "Udakavaha Srotas"],
+            "agni": ["Visamagni"],
+            "ama": ["Sama (acute stage) or Nirama (chronic stage)"],
+            "samprapti": "Vitiated Vata weakens the digestive fire, draws the water elements (Udaka) from the body into the colon (Pakvasaya), liquefies the stool, and causes painful, gaseous, frothy diarrhoea.",
+            "bheda": [],
+            "sadhya_asadhyata": "Sadhya (Curable)",
+            "pathya": [
+                "Peya (Rice gruels with cumin and ginger)",
+                "Takra (Buttermilk with roasted cumin)",
+                "Dadima (Pomegranate)"
+            ],
+            "apathya": [
+                "Guru bhojana (Heavy meals)",
+                "Snaana (Bathing)",
+                "Atapa (Sun exposure)",
+                "Vegadharana (Suppressing urges)"
+            ],
+            "related_diseases": ["Grahani", "Arsa"],
+            "chikitsa_references": ["CS. Ci. 19", "AH. Ci. 9"],
+            "classical_references": ["MN. 3.2", "SS. Ut. 40.7"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Sula", "modern_equivalents": ["Abdominal cramps", "Tenesmus", "Colic"]},
+                {"ayurvedic_term": "Phena-yuktam", "modern_equivalents": ["Frothy stools", "Steatorrhea (sometimes)"]},
+                {"ayurvedic_term": "Sabdam", "modern_equivalents": ["Flatulence", "Borborigmi"]},
+                {"ayurvedic_term": "Mutrasanga", "modern_equivalents": ["Dysuria", "Oliguria"]}
+            ],
+            "retrieval_document": "Disease: Vataja Atisara (Vata Diarrhoea). Symptoms: Abdominal pain, small frequent frothy stools, loud gaseous sounds, flatulence, dry stools, dry skin, dry mouth, urinary retention, rectal prolapse. Causes: Dry, cold food, excessive exercise, suppressing urges. Dosha: Vata. Dushya: Purisha, Udaka. Srotas: Annavaha, Purishavaha, Udakavaha. Samprapti: Vata displaces body fluid into colon, liquefies stool, causing painful diarrhoea. References: MN. 3.2, CS. Ci. 19.",
+            "confidence": 1.0
+        },
+        {
+            "roga": "Pittaja Atisara",
+            "lakshana": [
+                "Pita-vitka (Yellowish stool)",
+                "Rakta-vitka (Reddish/Bloody stool)",
+                "Nila-harita-vitka (Blue or green stool)",
+                "Ati-durgandha (Extremely foul-smelling stool, like raw meat)",
+                "Daha (Burning sensation in anus and body)",
+                "Kantha-talu-sosanam (Dryness of throat and palate)",
+                "Sveda (Excessive sweating)",
+                "Murccha (Fainting/Syncope)",
+                "Trsna (Intense thirst)",
+                "Gudapaka (Inflammation/Suppuration around the anus)"
+            ],
+            "nidana": [
+                "Amla, Lavana, Katu, Usna, Tiksna ahara (Spicy, sour, salty, hot food)",
+                "Ati-ushna weather (Hot summer season)",
+                "Anger and grief"
+            ],
+            "purvarupa": [
+                "Abdominal heaviness",
+                "Indigestion",
+                "Acid eructation"
+            ],
+            "rupa": [
+                "Diarrhoea with hot, foul-smelling, yellow/greenish/bloody liquid stools with burning sensation in rectum."
+            ],
+            "upashaya": [
+                "Sita-upachara (Cold foods, cooling packs)",
+                "Madhura, Tikta rasa (Sweet and bitter herbs like Kutaja, Bilva)"
+            ],
+            "anupashaya": [
+                "Usna-upachara",
+                "Pungent, sour, salty foods"
+            ],
+            "dosha": ["Pitta"],
+            "dushya": ["Purisha", "Rasa", "Rakta", "Udaka"],
+            "srotas": ["Annavaha", "Purishavaha", "Udakavaha", "Raktavaha"],
+            "agni": ["Tikshnagni"],
+            "ama": ["Sama (highly toxic/foul)"],
+            "samprapti": "Vitiated Pitta mixes with the digestive fluids, enters the colon, liquefies the stool, and causes yellow/green/bloody stools with burning heat and inflammation of the anus.",
+            "bheda": [],
+            "sadhya_asadhyata": "Sadhya (Curable)",
+            "pathya": [
+                "Buttermilk with Kutaja bark powder",
+                "Laja Manda (Puffed rice gruel)",
+                "Bilva fruit pulp"
+            ],
+            "apathya": [
+                "Spicy food",
+                "Alcohol",
+                "Sun exposure",
+                "Anger"
+            ],
+            "related_diseases": ["Raktatisara", "Grahani"],
+            "chikitsa_references": ["CS. Ci. 19.16"],
+            "classical_references": ["MN. 3.4", "SS. Ut. 40.9"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Pita-vitka", "modern_equivalents": ["Yellowish watery stools"]},
+                {"ayurvedic_term": "Ati-durgandha", "modern_equivalents": ["Foul-smelling stools", "Putrid odor"]},
+                {"ayurvedic_term": "Daha", "modern_equivalents": ["Burning anus", "Anorectal burning"]},
+                {"ayurvedic_term": "Gudapaka", "modern_equivalents": ["Anal inflammation", "Proctitis", "Perianal redness"]}
+            ],
+            "retrieval_document": "Disease: Pittaja Atisara (Pitta Diarrhoea). Symptoms: Yellow, green, or bloody stools, foul smell, burning sensation in anus, dry mouth, sweating, fainting, intense thirst, anal inflammation. Causes: Sour, salty, spicy, hot food, hot weather, anger. Dosha: Pitta. Dushya: Purisha, Rakta, Udaka. Srotas: Annavaha, Purishavaha, Udakavaha. Samprapti: Pitta liquefies stools, leading to hot, foul, colored stools with burning. References: MN. 3.4, SS. Ut. 40.9.",
+            "confidence": 1.0
+        },
+
+        # --- GRAHANI (SPRUE / IBS) ---
+        {
+            "roga": "Vataja Grahani",
+            "lakshana": [
+                "Pakva-apakva vitka (Alternating passing of digested and undigested stools)",
+                "Dravam (Liquid stools)",
+                "Suskam (Dry, hard stools)",
+                "Tanum (Thin/watery stools)",
+                "Sula (Sharp pricking abdominal pain)",
+                "Visucika (Pin-prick pain in body)",
+                "Hrllasa (Nausea)",
+                "Praseka (Salivation/Waterbrash)",
+                "Aruchi (Loss of taste/appetite)",
+                "Kasa-svasa (Cough and dyspnea)",
+                "Karnadhvana (Ringing/Tinnitus in ears)",
+                "Balaksaya (Loss of strength/Emaciation)",
+                "Parikartika (Pricking/cutting pain in anus)"
+            ],
+            "nidana": [
+                "Abhojana (Fasting too much)",
+                "Atibhojana (Eating too much)",
+                "Vishamashana (Eating at irregular times)",
+                "Asatmya bhojana (Eating incompatible foods)",
+                "Ruksa, Sita, Suska ahara (Dry, cold, stale foods)"
+            ],
+            "purvarupa": [
+                "Trsna (Thirst)",
+                "Alasya (Laziness)",
+                "Baladhvamsa (Fatigue)",
+                "Vidaha (Heartburn)",
+                "Cirad-paka (Delayed digestion)"
+            ],
+            "rupa": [
+                "Frequent passing of frothy, liquid, or dry stools with sound and pain, alternating with constipation."
+            ],
+            "upashaya": [
+                "Takra (Buttermilk) processed with Panchakola",
+                "Snigdha-ushna diet",
+                "Deepana-pachana herbs"
+            ],
+            "anupashaya": [
+                "Dry, cold foods",
+                "Fasting",
+                "Stress"
+            ],
+            "dosha": ["Vata"],
+            "dushya": ["Rasa", "Annavaha Dhatu"],
+            "srotas": ["Annavaha Srotas", "Purishavaha Srotas"],
+            "agni": ["Visamagni"],
+            "ama": ["Sama (undigested food particles present in stool)"],
+            "samprapti": "Vitiated Vata affects the Grahani (duodenum/small intestine), disrupting the digestive fire (Agni). The Grahani fails to hold and digest the food, releasing it prematurely as a mix of digested and undigested matter with flatulence and colic.",
+            "bheda": [],
+            "sadhya_asadhyata": "Sadhya (Curable in early stage)",
+            "pathya": [
+                "Takra (Buttermilk with Laja, Cumin, Shunthi)",
+                "Bilva phala (Bael fruit)",
+                "Easily digestible warm food"
+            ],
+            "apathya": [
+                "Cold drinks",
+                "Fasting",
+                "Heavy grains",
+                "Day sleep"
+            ],
+            "related_diseases": ["Vataja Atisara", "Agnimandya"],
+            "chikitsa_references": ["CS. Ci. 15.58", "AH. Ci. 10.5"],
+            "classical_references": ["MN. 4.6", "SS. Ut. 40.165"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Pakva-apakva vitka", "modern_equivalents": ["Irritable Bowel Syndrome (IBS-A)", "Alternating diarrhoea and constipation"]},
+                {"ayurvedic_term": "Praseka", "modern_equivalents": ["Waterbrash", "Excessive salivation"]},
+                {"ayurvedic_term": "Karnadhvana", "modern_equivalents": ["Tinnitus"]},
+                {"ayurvedic_term": "Parikartika", "modern_equivalents": ["Anal fissure pain", "Sharp rectal pain"]}
+            ],
+            "retrieval_document": "Disease: Vataja Grahani (Vata IBS/Malabsorption). Symptoms: Alternating loose and dry stools, watery stool, abdominal pain, nausea, salivation, appetite loss, cough, ringing ears, weakness, anal pain. Causes: Fasting, irregular eating, dry cold foods. Dosha: Vata. Dushya: Rasa. Srotas: Annavaha, Purishavaha. Samprapti: Vata impairs Agni in Grahani, causing IBS. References: MN. 4.6, CS. Ci. 15.58.",
+            "confidence": 1.0
+        },
+
+        # --- PANDU & KAMALA (ANEMIA & JAUNDICE) ---
+        {
+            "roga": "Kamala",
+            "lakshana": [
+                "Haridra-netratvam (Yellow discoloration of eyes)",
+                "Haridra-tvaktvam (Yellow discoloration of skin)",
+                "Haridra-nakha-mukhatvam (Yellow nails and mouth)",
+                "Rakta-pita-mutra-sakrt (Yellowish-red urine and feces)",
+                "Daha (Burning sensation)",
+                "Avipaka (Indigestion)",
+                "Daurbalya (General weakness/Fatigue)",
+                "Sada (Lethargy)",
+                "Aruchi (Loss of appetite)",
+                "Bala-utsaha-ksaya (Loss of strength and enthusiasm)"
+            ],
+            "nidana": [
+                "Pittala ahara-vihara (Excessive intake of pitta-aggravating foods)",
+                "Aggravation after recovery from Pandu (anemia)",
+                "Excessive hot, spicy, fermented foods",
+                "Alcohol"
+            ],
+            "purvarupa": [
+                "Yellowish tinge in urine",
+                "Indigestion",
+                "Burning sensation during urination"
+            ],
+            "rupa": [
+                "Deep yellow staining of eyes, skin, nails, dark yellow urine, fatigue, and burning sensation."
+            ],
+            "upashaya": [
+                "Midu virechana (Mild therapeutic purgation using Trivrit or Aragvadha)",
+                "Bitter herbs (Guduchi, Katuki, Bhumi-amyalaki)",
+                "Madhura, Tikta diet"
+            ],
+            "anupashaya": [
+                "Spicy, salty, sour foods",
+                "Direct sun exposure",
+                "Stress and anger"
+            ],
+            "dosha": ["Pitta"],
+            "dushya": ["Rakta", "Mamsa", "Rasa"],
+            "srotas": ["Raktavaha Srotas", "Annavaha Srotas"],
+            "agni": ["Mandagni/Tikshnagni disturbed"],
+            "ama": ["Nirama or Sama"],
+            "samprapti": "If a patient recovering from Pandu (anemia) consumes Pitta-aggravating foods, the highly increased Pitta burns the Rakta and Mamsa Dhatus, leading to stagnation and excessive secretion of bile pigments, coloring the skin, eyes, and urine deep yellow.",
+            "bheda": [
+                "Kosthasrita Kamala (Hepatic/Pre-hepatic jaundice)",
+                "Sakhasrita Kamala (Obstructive jaundice)"
+            ],
+            "sadhya_asadhyata": "Sadhya (Curable in early stages; chronic becomes Kumbha-kamala, which is difficult).",
+            "pathya": [
+                "Yava (Barley)",
+                "Shali rice",
+                "Mudga yusha",
+                "Sugarcane juice (Iksu rasa)",
+                "Dadima (Pomegranate)"
+            ],
+            "apathya": [
+                "Sarsapa (Mustard oil)",
+                "Spicy/Sour items",
+                "Maithuna (Sex)",
+                "Krodha (Anger)"
+            ],
+            "related_diseases": ["Panduroga", "Kumbhakamala"],
+            "chikitsa_references": ["CS. Ci. 16.34"],
+            "classical_references": ["MN. 8.16", "AH. Ni. 13"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Haridra-netratvam", "modern_equivalents": ["Scleral icterus", "Yellow eyes"]},
+                {"ayurvedic_term": "Haridra-tvaktvam", "modern_equivalents": ["Jaundice", "Yellow skin"]},
+                {"ayurvedic_term": "Rakta-pita-mutra-sakrt", "modern_equivalents": ["Dark urine", "Choluria", "Yellow-red feces"]},
+                {"ayurvedic_term": "Daurbalya", "modern_equivalents": ["Astenia", "Fatigue", "Weakness"]}
+            ],
+            "retrieval_document": "Disease: Kamala (Jaundice). Symptoms: Yellow eyes, yellow skin, yellow nails, dark red-yellow urine, burning, indigestion, severe weakness, loss of appetite, fatigue. Causes: Excess Pitta-aggravating food, neglected anemia. Dosha: Pitta. Dushya: Rakta, Mamsa. Srotas: Raktavaha, Annavaha. Samprapti: Pitta vitiation burns blood and flesh, causing jaundice. References: MN. 8.16, CS. Ci. 16.34.",
+            "confidence": 1.0
+        },
+
+        # --- SVASA (RESPIRATORY / ASTHMA) ---
+        {
+            "roga": "Tamaka Svasa",
+            "lakshana": [
+                "Ghurghurakam (Wheezing/Rattling sound in chest)",
+                "Ati-tivra svasavega (Severe attacks of dyspnea/breathlessness)",
+                "Kasa (Coughing, which worsens during attacks)",
+                "Pranadaha (Sense of suffocation/suffocating chest pain)",
+                "Kricchra-bhashana (Difficulty in speaking)",
+                "Nidra-nasa (Sleeplessness due to orthopnea)",
+                "Asino labhate sukham (Relief obtained only by sitting up)",
+                "Lalat-sveda (Sweat on forehead during attacks)",
+                "Moha (Confusion/Disorientation during attack)",
+                "Kanta-dhvamsa (Hoarseness of voice)",
+                "Sita-abhinandinam (Desire for warm/hot things, aversion to cold)"
+            ],
+            "nidana": [
+                "Raja-sevana (Inhalation of dust)",
+                "Dhuma-sevana (Inhalation of smoke)",
+                "Vata-sevana (Exposure to cold wind/air)",
+                "Sita-ambupana (Drinking cold water)",
+                "Ama-dosha (Accumulation of undigested toxins)",
+                "Amasaya-kledana (Excessive Kapha in stomach)",
+                "Kanthabhigata (Injury to throat/chest)"
+            ],
+            "purvarupa": [
+                "Anaha (Flatulence/Abdominal distension)",
+                "Parsva-sula (Pain in flank/sides of chest)",
+                "Hridaya-peeda (Chest tightness/Precordial discomfort)",
+                "Prana-vilomatvam (Reversal of breath movement/Sighing)"
+            ],
+            "rupa": [
+                "Paroxysmal attacks of dyspnea with wheezing, cough, inability to sleep lying down, relief on sitting, and forehead sweating."
+            ],
+            "upashaya": [
+                "Usna upachara (Warm compresses, warm drinks)",
+                "Snigdha-ushna food (Warm oily soups/gruels)",
+                "Katu-ushna herbs (Vasa, Kantakari, Shunthi)"
+            ],
+            "anupashaya": [
+                "Sita ahara-vihara (Cold water, cold air, rainy weather)",
+                "East wind (Purva vata)",
+                "Kapha-increasing foods (curd, banana)"
+            ],
+            "dosha": ["Kapha", "Vata"],
+            "dushya": ["Prana", "Rasa"],
+            "srotas": ["Pranavaha Srotas", "Annavaha Srotas"],
+            "agni": ["Mandagni"],
+            "ama": ["Sama (due to links with Annavaha srotas)"],
+            "samprapti": "Vitiated Kapha blocks the movement of Prana Vayu in the lungs/chest. The obstructed Vata Vayu reverses its path and moves upwards, causing paroxysms of coughing and severe breathlessness with rattling sound.",
+            "bheda": [
+                "Santalaka (worsens with darkness/cloudy weather)",
+                "Pratamaka (associated with fever and confusion)"
+            ],
+            "sadhya_asadhyata": "Yapya (Manageable/Chronic), but can be Sadhya in fresh acute cases.",
+            "pathya": [
+                "Purana Shali (Old rice)",
+                "Yava (Barley)",
+                "Warm water (Ushnodaka)",
+                "Kulatthadi yusha (Horse gram soup)",
+                "Vasa (Adhatoda vasica)"
+            ],
+            "apathya": [
+                "Sita upachara (Cold foods/cold bath)",
+                "Curd (Dadhi)",
+                "Fish (Matsya)",
+                "Suppression of urges",
+                "Dust and smoke"
+            ],
+            "related_diseases": ["Kasa", "Hikka", "Uras-ksata"],
+            "chikitsa_references": ["CS. Ci. 17.58", "AH. Ci. 4"],
+            "classical_references": ["MN. 12.10-15", "SS. Ut. 51"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Ghurghurakam", "modern_equivalents": ["Wheezing", "Rhonchi", "Stridor"]},
+                {"ayurvedic_term": "Ati-tivra svasavega", "modern_equivalents": ["Acute dyspnea", "Asthmatic attack"]},
+                {"ayurvedic_term": "Asino labhate sukham", "modern_equivalents": ["Orthopnea", "Relief in sitting position"]},
+                {"ayurvedic_term": "Pranadaha", "modern_equivalents": ["Dyspnea-associated chest tightness"]}
+            ],
+            "retrieval_document": "Disease: Tamaka Svasa (Bronchial Asthma). Symptoms: Wheezing, rattling in chest, severe breathlessness, cough, chest tightness, speaking difficulty, orthopnea, forehead sweat, relief in sitting, voice hoarseness. Causes: Dust, smoke, cold wind, cold water, weak digestion. Dosha: Kapha, Vata. Dushya: Prana, Rasa. Srotas: Pranavaha, Annavaha. Samprapti: Kapha blocks airway, forcing Vata to move upward, causing asthmatic wheezing and dyspnea. References: MN. 12.10-15, CS. Ci. 17.58.",
+            "confidence": 1.0
+        },
+
+        # --- VATAVYADHI (NERVOUS SYSTEM DISEASES) ---
+        {
+            "roga": "Gridhrasi",
+            "lakshana": [
+                "Sphik-purva sula (Pain starting from the hip/gluteal region)",
+                "Kati-uru-janu-jangha-pada sula (Pain radiating down through waist, thigh, knee, calf to foot)",
+                "Stambha (Stiffness of the leg)",
+                "Spandana (Pulsating/throbbing pain or twitching in the leg)",
+                "Suptata (Numbness/Loss of sensation in the leg)",
+                "Toda (Pricking/Needle-like pain)",
+                "Gauravam (Heaviness in the leg)",
+                "Aruchi (Loss of appetite - seen in Vata-Kapha variety)"
+            ],
+            "nidana": [
+                "Ruksa, Sita ahara (Dry, cold foods)",
+                "Ati-vyayama (Excessive stretching, jumping, running)",
+                "Abhighata (Trauma/injury to spine/hip)",
+                "Bharavahana (Carrying heavy loads on back)"
+            ],
+            "purvarupa": [
+                "Stiffness in the lumbar region",
+                "Mild radiating ache",
+                "Tingling sensation in foot"
+            ],
+            "rupa": [
+                "Sharp radiating pain from hip down to the toe of one or both legs, with stiffness, pricking, numbness, and limping gait."
+            ],
+            "upashaya": [
+                "Snigdha-ushna sveda (Warm oil massage followed by steam)",
+                "Agnikarma (Therapeutic cauterization at the sciatic point)",
+                "Siravyadha (Venesection)",
+                "Basti (Enema therapy)"
+            ],
+            "anupashaya": [
+                "Fasting",
+                "Exposure to cold weather/cold draft",
+                "Heavy physical strain"
+            ],
+            "dosha": ["Vata", "Vata-Kapha (mixed type)"],
+            "dushya": ["Kandara (Tendons)", "Snayu (Ligaments)", "Mamsa"],
+            "srotas": ["Majjavaha Srotas", "Mamsavaha Srotas"],
+            "agni": ["Visamagni"],
+            "ama": ["Nirama (usually) or Sama"],
+            "samprapti": "Vitiated Vata settles in the Kandara (tendons/nerves) of the hip and radiates downwards through the leg, impairing the ability to stretch or flex the leg and causing agonizing pain (like a vulture's claw, hence 'Gridhrasi').",
+            "bheda": [
+                "Vataja Gridhrasi (dominant pain, stiffness, twitching)",
+                "Vata-Kaphaja Gridhrasi (associated with nausea, heaviness, drowsiness, anorexia)"
+            ],
+            "sadhya_asadhyata": "Sadhya (Curable, but requires prolonged treatment in chronic state).",
+            "pathya": [
+                "Godhuma (Wheat)",
+                "Masha (Black gram)",
+                "Eranda taila (Castor oil)",
+                "Garlic (Lasuna)",
+                "Warm water"
+            ],
+            "apathya": [
+                "Chanaka (Bengal gram)",
+                "Yava (Barley)",
+                "Sita jala",
+                "Ati-langhana (Excessive fasting)",
+                "Ati-cesta (Excessive walking/running)"
+            ],
+            "related_diseases": ["Katigraha (Lumbago)", "Urstambha"],
+            "chikitsa_references": ["Chakradatta Vatavyadhi Chikitsa"],
+            "classical_references": ["MN. 22.54", "SS. Ni. 1"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Sphik-purva sula", "modern_equivalents": ["Sciatica", "Gluteal pain"]},
+                {"ayurvedic_term": "Kati-uru-janu-jangha-pada sula", "modern_equivalents": ["Radiating pain", "Radiculopathy", "L5-S1 nerve root pain"]},
+                {"ayurvedic_term": "Suptata", "modern_equivalents": ["Numbness", "Sensory deficit"]},
+                {"ayurvedic_term": "Stambha", "modern_equivalents": ["Stiffness", "Range of motion restriction"]}
+            ],
+            "retrieval_document": "Disease: Gridhrasi (Sciatica). Symptoms: Radiating pain from hip through waist, thigh, knee, calf to foot, stiffness, throbbing, numbness, pricking pain, heaviness, appetite loss, limping. Causes: Spinal injury, carrying loads, excessive jumping, dry cold food. Dosha: Vata, Kapha. Dushya: Kandara, Snayu, Mamsa. Srotas: Majjavaha, Mamsavaha. Samprapti: Vata settles in sciatic nerve/tendons, causing radiating pain like vulture claw. References: MN. 22.54, SS. Ni. 1.",
+            "confidence": 1.0
+        },
+
+        # --- SULA (COLIC & ULCERS) ---
+        {
+            "roga": "Parinamasula",
+            "lakshana": [
+                "Bhukte jeeryati sula (Pain occurring during the process of digestion)",
+                "Jeerne sula (Pain relieved or appearing after complete digestion - duodenal vs gastric patterns)",
+                "Sula (Colic/aching pain in epigastrium)",
+                "Adhmana (Abdominal distension)",
+                "Atopa (Gurgling sounds in abdomen)",
+                "Mutra-vit-vibandha (Constipation and difficulty in urination)",
+                "Chardi (Vomiting - gives immediate relief to pain)",
+                "Aruchi (Loss of taste/Anorexia)"
+            ],
+            "nidana": [
+                "Guru, Ruksa, Sita ahara (Heavy, dry, cold foods)",
+                "Viruddha bhojana (Incompatible eating)",
+                "Abhishyandi bhojana (Mouth-watering/sticky heavy food)",
+                "Krodha, Soka (Anger, grief)",
+                "Vegasandarana (Suppressing natural urges)"
+            ],
+            "purvarupa": [
+                "Acid eructation",
+                "Heartburn",
+                "Nausea after eating"
+            ],
+            "rupa": [
+                "Epigastric pain during digestion, relieved by vomiting or eating sweet/cool items (depending on pitta/vata dominance)."
+            ],
+            "upashaya": [
+                "Vomiting (Chardi - relieves pain instantly by expelling acid)",
+                "Warm fluids, digestible light soups",
+                "Shatavari, Yashtimadhu, Shankha Bhasma"
+            ],
+            "anupashaya": [
+                "Spicy, sour, dry foods",
+                "Fasting (increases vata sula)",
+                "Stress"
+            ],
+            "dosha": ["Vata", "Pitta", "Kapha (Tridosaja, with Vata leading)"],
+            "dushya": ["Rasa", "Annavaha Dhatu", "Mamsavaha Dhatu"],
+            "srotas": ["Annavaha Srotas"],
+            "agni": ["Mandagni/Visamagni"],
+            "ama": ["Sama (often associated with undigested juice)"],
+            "samprapti": "Vata becomes dominant and entraps Pitta and Kapha. During digestion (Parinama), as food moves through the duodenum, Vata gets provoked and causes a boring/cutting pain. The heat of Pitta adds burning (Daha), and Kapha adds nausea.",
+            "bheda": [
+                "Vataja Parinamasula (dryness, constipation, relief by oil/warmth)",
+                "Pittaja Parinamasula (burning pain, relieved by cold, sweet items)",
+                "Kaphaja Parinamasula (nausea, vomiting, dull ache, relieved by dry/hot items)"
+            ],
+            "sadhya_asadhyata": "Krcchrasadhya (Difficult to cure; chronic peptic ulcers take time).",
+            "pathya": [
+                "Purana Shali",
+                "Godhuma (Wheat)",
+                "Mudga yusha",
+                "Ghee (Sarpis)",
+                "Prapunnada, Yashtimadhu"
+            ],
+            "apathya": [
+                "Katu-amla-lavana foods (Spicy, sour, salty)",
+                "Tambula (Betel chewing)",
+                "Madyapana (Alcohol)",
+                "Krodha (Anger)"
+            ],
+            "related_diseases": ["Annadravasula", "Agnimandya", "Amlapitta"],
+            "classical_references": ["MN. 26.17-23"],
+            "chikitsa_references": ["Chakradatta Sula Chikitsa"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Bhukte jeeryati sula", "modern_equivalents": ["Peptic ulcer pain", "Duodenal ulcer", "Pain during digestion"]},
+                {"ayurvedic_term": "Chardi-upashama", "modern_equivalents": ["Pain relief after vomiting"]},
+                {"ayurvedic_term": "Sula", "modern_equivalents": ["Epigastric pain", "Dyspeptic colic"]}
+            ],
+            "retrieval_document": "Disease: Parinamasula (Peptic / Duodenal Ulcer). Symptoms: Pain during digestion, colic in epigastrium, bloating, gurgling, constipation, vomiting which relieves pain, anorexia. Causes: Dry cold heavy food, anger, grief. Dosha: Vata, Pitta, Kapha. Dushya: Rasa. Srotas: Annavaha. Samprapti: Vata traps Pitta and Kapha, causing burning pain in epigastrium during digestion. References: MN. 26.17-23.",
+            "confidence": 1.0
+        },
+
+        # --- AMAVATA (RHEUMATOID ARTHRITIS) ---
+        {
+            "roga": "Amavata",
+            "lakshana": [
+                "Angamarda (Body aches/generalized myalgia)",
+                "Aruchi (Loss of appetite/Taste)",
+                "Trsna (Excessive thirst)",
+                "Alasya (Lethargy/Sluggishness)",
+                "Gauravam (Heaviness in the body)",
+                "Jvara (Fever/Febrile feeling)",
+                "Apaka (Indigestion)",
+                "Sunata anganam (Swelling of body parts/joints)",
+                "Hasta-pada-siro-gulpha-trika-janu-uru-sandhi sula (Severe pain in joints of hands, feet, head, ankles, sacrum, knees, thighs)",
+                "Sandhi-stabhdata (Joint stiffness, especially morning stiffness)",
+                "Vrschika-damsa-vat sula (Pain resembling scorpion stings)"
+            ],
+            "nidana": [
+                "Viruddha ahara (Incompatible foods e.g. milk and fish)",
+                "Viruddha cesta (Incompatible activities)",
+                "Mandagni (Weak digestive fire)",
+                "Nischala (Sedentary lifestyle)",
+                "Snigdha bhojana-paschat vyayama (Doing heavy exercise immediately after eating oily/heavy food)"
+            ],
+            "purvarupa": [
+                "Stiffness in joints",
+                "Indigestion",
+                "Lethargy",
+                "Gurgling in stomach"
+            ],
+            "rupa": [
+                "Symmetrical joint swelling, excruciating pain (scorpion-bite like), stiffness, fever, and indigestion."
+            ],
+            "upashaya": [
+                "Ruksa sveda (Dry heat fomentation, e.g., sand bag massage)",
+                "Katu-tikta foods (Spicy and bitter foods)",
+                "Langhana (Fasting)",
+                "Eranda taila (Castor oil for laxation)"
+            ],
+            "anupashaya": [
+                "Snaana (Cold baths)",
+                "Snigdha upachara (Oil massage in acute stage)",
+                "Guru-dahi-milk (Heavy foods, curd, milk)"
+            ],
+            "dosha": ["Kapha", "Vata", "Ama (toxin)"],
+            "dushya": ["Asthi", "Sandhi (Joints)", "Rasa", "Rakta"],
+            "srotas": ["Rasavaha Srotas", "Asthivaha Srotas", "Annavaha Srotas"],
+            "agni": ["Mandagni"],
+            "ama": ["Sama (Highly dominant Ama mixed with Vata)"],
+            "samprapti": "Due to weak Agni, undigested food toxin (Ama) is formed in the stomach. Aggravated Vata carries this Ama to the Kapha seats, specifically the joints (Sandhi). The Ama clogs the joint spaces, attracts water (swelling), and Vata causes excruciating pain and stiffness.",
+            "bheda": [
+                "Vataja Amavata (dominant pain)",
+                "Pittaja Amavata (dominant burning/redness)",
+                "Kaphaja Amavata (dominant swelling/stiffness)"
+            ],
+            "sadhya_asadhyata": "Eka-dosaja is Sadhya (Curable), Dvi-dosaja is Yapya (Manageable), Tridosaja/Sannipataja is Asadhya (Incurable).",
+            "pathya": [
+                "Yava (Barley)",
+                "Kulattha (Horse gram)",
+                "Shigru (Moringa)",
+                "Warm water (Ushnodaka)",
+                "Shunthi (Dry ginger)"
+            ],
+            "apathya": [
+                "Dahi (Curd)",
+                "Matsya (Fish)",
+                "Guda (Jaggery)",
+                "Viruddha ahara",
+                "Divasvapna (Day sleep)",
+                "Cold wind exposure"
+            ],
+            "related_diseases": ["Sandhigatavata", "Vatarakta"],
+            "chikitsa_references": ["Chakradatta Amavata Chikitsa"],
+            "classical_references": ["MN. 25.1-5", "AH. Ni. 15"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Sandhi-stabhdata", "modern_equivalents": ["Morning stiffness", "Joint stiffness"]},
+                {"ayurvedic_term": "Hasta-pada-siro-gulpha-trika-janu-uru-sandhi sula", "modern_equivalents": ["Polyarthritis", "Joint pain", "Symmetrical joint involvement"]},
+                {"ayurvedic_term": "Sunata", "modern_equivalents": ["Joint swelling", "Edema"]},
+                {"ayurvedic_term": "Vrschika-damsa-vat sula", "modern_equivalents": ["Severe excruciating lancinating joint pain"]}
+            ],
+            "retrieval_document": "Disease: Amavata (Rheumatoid Arthritis). Symptoms: Joint pain in hands, feet, knees, ankles, sacrum, morning stiffness, joint swelling, fever, indigestion, thirst, lethargy, body aches, scorpion-sting pain. Causes: Incompatible foods, sedentary life, exercise after heavy meals, weak digestion. Dosha: Vata, Kapha, Ama. Dushya: Rasa, Asthi, Sandhi. Srotas: Rasavaha, Asthivaha. Samprapti: Undigested toxin (Ama) mixes with Vata, settles in joints, causing severe inflammation and stiffness. References: MN. 25.1-5.",
+            "confidence": 1.0
+        },
+
+        # --- VATARAKTA (GOUT) ---
+        {
+            "roga": "Vatarakta",
+            "lakshana": [
+                "Pada-angustha sula (Pain in the big toe of the foot - classic starting point)",
+                "Sandhi-ruk (Severe joint pain)",
+                "Toda (Pricking pain)",
+                "Sphurana (Throbbing sensation)",
+                "Bheda (Cutting pain)",
+                "Sotha (Joint swelling/inflammation)",
+                "Tvac-vaivarnya (Discoloration of the skin over joint - red/purplish)",
+                "Daha (Intense burning sensation in joints)",
+                "Kandu (Itching over affected joint)"
+            ],
+            "nidana": [
+                "Lavan, Amla, Katu, Ksara ahara (Excessive salty, sour, pungent, alkaline food)",
+                "Klinna, Suska mamsa (Eating decomposed or dried meat)",
+                "Kulattha, Masha, Nishpava (Excessive horse gram, black gram, flat beans)",
+                "Dadhi, Kanji (Curd, fermented gruel)",
+                "Viruddha bhojana (Incompatible food)",
+                "Adhyashana (Eating before digestion of previous meal)",
+                "Hasti-asva-ustra-yana (Riding elephants, horses, camels - mechanical trauma to joints)",
+                "Divasvapna, Prajagara (Irregular sleep habits)"
+            ],
+            "purvarupa": [
+                "Ati-sveda / Asveda (Excessive sweating or complete absence of sweating in feet/hands)",
+                "Karapada suptata (Numbness in hands and feet)",
+                "Kandu (Itching in joints)",
+                "Gauravam (Heaviness in legs)",
+                "Toda / Ruk (Pricking pain or aching in small joints)"
+            ],
+            "rupa": [
+                "Acute painful swelling starting from the big toe, spreading to other small joints, with burning, throbbing, and skin discoloration."
+            ],
+            "upashaya": [
+                "Seka (Affusion/pouring of cool herbal liquids)",
+                "Lepa (Cooling paste application, e.g., liquorice/sandalwood)",
+                "Madhura, Tikta foods"
+            ],
+            "anupashaya": [
+                "Ushna upachara (Hot applications/poultices in pitta-dominant state)",
+                "Salty, sour, spicy foods",
+                "Alcohol"
+            ],
+            "dosha": ["Vata", "Rakta (blood tissue acting as a pathogen)"],
+            "dushya": ["Rakta", "Sandhi (Joints)", "Twak (Skin)"],
+            "srotas": ["Raktavaha Srotas", "Asthivaha Srotas"],
+            "agni": ["Vishamagni/Tikshnagni disturbed"],
+            "ama": ["Nirama (usually, but can be Sama if digestion is bad)"],
+            "samprapti": "Vitiated Rakta (due to bad diet) blocks the pathways of Vata. Vata gets obstructed and in turn vitiates the Rakta further. The joint spaces, especially in the distal extremities (like the big toe), are where the flow is slowest; hence, the vitiated Vata and Rakta settle there, causing Vatarakta.",
+            "bheda": [
+                "Uttana Vatarakta (Superficial - skin, itching, burning)",
+                "Gambhira Vatarakta (Deep - joints, swelling, deformity, severe pain)"
+            ],
+            "sadhya_asadhyata": "Eka-dosaja is Sadhya (Curable), Dvidosaja is Yapya (Manageable), Sannipataja/Upadrava-yukta is Asadhya (Incurable).",
+            "pathya": [
+                "Shali rice",
+                "Yava (Barley)",
+                "Godhuma (Wheat)",
+                "Mudga yusha (Mung soup)",
+                "Milk (Ksheera)",
+                "Guduchi (Amrita)"
+            ],
+            "apathya": [
+                "Masha (Black gram)",
+                "Kulattha (Horse gram)",
+                "Madyapana (Alcohol/Beer)",
+                "Amla-lavana foods (Sour/salty foods)",
+                "Divasvapna (Day sleeping)",
+                "Sun exposure"
+            ],
+            "related_diseases": ["Amavata", "Sandhigatavata", "Kustha"],
+            "chikitsa_references": ["CS. Ci. 29", "AH. Ci. 22"],
+            "classical_references": ["MN. 23.1-5", "SS. Ci. 5"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Pada-angustha sula", "modern_equivalents": ["Podagra", "Gouty attack in the big toe (first metatarsophalangeal joint)"]},
+                {"ayurvedic_term": "Tvac-vaivarnya", "modern_equivalents": ["Erythema", "Reddish-purple skin discoloration"]},
+                {"ayurvedic_term": "Sphurana", "modern_equivalents": ["Throbbing pain"]},
+                {"ayurvedic_term": "Karapada suptata", "modern_equivalents": ["Peripheral numbness", "Paresthesia"]}
+            ],
+            "retrieval_document": "Disease: Vatarakta (Gout). Symptoms: Big toe pain, joint pain, pricking, throbbing, cutting pain, joint swelling, skin redness/purple discoloration, burning, itching, numbness in hands/feet. Causes: Salty, sour, spicy food, black gram, alcohol, riding camels/horses, incompatible eating. Dosha: Vata, Rakta. Dushya: Rakta, Sandhi. Srotas: Raktavaha, Asthivaha. Samprapti: Vitiated blood obstructs Vata, which further vitiates blood and settles in small extremity joints. References: MN. 23.1-5, CS. Ci. 29.",
+            "confidence": 1.0
+        },
+
+        # --- ASMARI (VESICAL CALCULUS / URINARY STONES) ---
+        {
+            "roga": "Asmari",
+            "lakshana": [
+                "Nabhi-basti-seevani-mehana sula (Severe pain in umbilicus, bladder, perineum, and penis)",
+                "Mutradhara-sanga (Sudden interruption of urinary stream)",
+                "Mutra-krcchra (Difficulty and pain in passing urine)",
+                "Sarudhira mutratvam (Hematuria/passing blood-mixed urine)",
+                "Gomutra-prakasam mutra (Urine looking like cow's urine or turbid)",
+                "Vilekhana (Feeling of scratching/scraping in urethra during urination)",
+                "Jvara (Fever)",
+                "Aruchi (Loss of appetite)"
+            ],
+            "nidana": [
+                "Apthya ahara (Improper diet)",
+                "Sanshodhana-akriya (Neglecting detoxification)",
+                "Sheeta, Guru, Snigdha ahara (Excessive cold, heavy, greasy foods)",
+                "Divasvapna (Day sleep)"
+            ],
+            "purvarupa": [
+                "Basti-adhmana (Distension of bladder)",
+                "Basti-toda (Pricking pain in bladder area)",
+                "Mutra-chhagala-gandhata (Goat-like odor in urine)",
+                "Mutra-krcchratvam (Mild difficulty during urination)"
+            ],
+            "rupa": [
+                "Exquisite colic pain in loin-to-groin region, hematuria, sudden blockage of urinary flow, turbid urine."
+            ],
+            "upashaya": [
+                "Usna kashaya (Warm diuretic decoctions, e.g. Varunadi Kwath)",
+                "Ushna sveda (Warm hot-water bag fomentation on bladder)",
+                "Pashanabheda, Gokshura"
+            ],
+            "anupashaya": [
+                "Sheeta upachara (Cold applications)",
+                "Dry, astringent foods",
+                "Suppression of urine urge"
+            ],
+            "dosha": ["Kapha", "Vata", "Pitta"],
+            "dushya": ["Mutra", "Basti (Bladder)"],
+            "srotas": ["Mutravaha Srotas"],
+            "agni": ["Mandagni"],
+            "ama": ["Sama (sometimes)"],
+            "samprapti": "Kapha acts as the binding agent. Vata dries up the urine and Kapha secretions in the bladder, forming a hard stone (Asmari) like clay drying in a pot. The stone blocks the urinary tract, causing excruciating pain and hematuria.",
+            "bheda": [
+                "Vataja Asmari (rough, dark, thorny stone, severe pain)",
+                "Pittaja Asmari (yellowish-red, smooth stone, burning pain)",
+                "Kaphaja Asmari (white, large, honey-colored stone, dull pain)",
+                "Sukraja Asmari (Semen-induced calculus)"
+            ],
+            "sadhya_asadhyata": "Sadhya in early stage; chronic might require surgery (Sastra-kriya).",
+            "pathya": [
+                "Purana Shali (Old rice)",
+                "Mudga (Green gram)",
+                "Yava (Barley)",
+                "Kulattha yusha (Horse gram soup - highly litholytic)",
+                "Gokshura, Varuna"
+            ],
+            "apathya": [
+                "Pishta-anna (Refined flour/pastries)",
+                "Dvibala (Incompatible dual foods)",
+                "Viruddha ahara",
+                "Suppression of urine (Mutra-vegadharana)"
+            ],
+            "related_diseases": ["Mutrakrcchra", "Mutraghata"],
+            "class_references": [],
+            "classical_references": ["MN. 32.1-5", "SS. Ni. 3"],
+            "symptom_mapping": [
+                {"ayurvedic_term": "Nabhi-basti-seevani-mehana sula", "modern_equivalents": ["Renal colic", "Ureteric colic", "Radiating bladder pain"]},
+                {"ayurvedic_term": "Mutradhara-sanga", "modern_equivalents": ["Intermittent urinary stream", "Urinary obstruction"]},
+                {"ayurvedic_term": "Sarudhira mutratvam", "modern_equivalents": ["Hematuria", "Blood in urine"]},
+                {"ayurvedic_term": "Vilekhana", "modern_equivalents": ["Urethral scratching sensation", "Dysuria"]}
+            ],
+            "retrieval_document": "Disease: Asmari (Renal/Vesical Calculus / Kidney Stones). Symptoms: Bladder, penis, groin pain, interrupted urinary stream, difficulty urinating, blood in urine, turbid urine, fever, scraping pain in urethra. Causes: Heavy cold food, day sleep, sedentary life. Dosha: Kapha, Vata, Pitta. Dushya: Mutra, Basti. Srotas: Mutravaha. Samprapti: Kapha binds materials, Vata dries them, forming stone in bladder which blocks urine. References: MN. 32.1-5, SS. Ni. 3.",
+            "confidence": 1.0
+        }
+    ]
+
+    os.makedirs(r"d:\NIdan_bot\backend\data", exist_ok=True)
+    db_path = r"d:\NIdan_bot\backend\data\disease_db.json"
+    with open(db_path, 'w', encoding='utf-8') as f:
+        json.dump(diseases, f, ensure_ascii=False, indent=2)
+        
+    print(f"Saved {len(diseases)} key diseases to {db_path}")
+
+if __name__ == "__main__":
+    build_disease_database()
