@@ -74,7 +74,10 @@ def search_diseases(req: SearchRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def generate_offline_fallback(message: str, search_results: List[Dict[str, Any]], error_msg: Optional[str] = None) -> str:
+def generate_offline_fallback(message: str, search_results: List[Dict[str, Any]], error_msg: Optional[str] = None, provider: str = "gemini") -> str:
+    provider_name = provider.upper()
+    key_name = "GROQ_API_KEY" if provider == "groq" else ("OPENROUTER_API_KEY" if provider == "openrouter" else "GEMINI_API_KEY")
+    
     if not search_results:
         response_text = (
             "### 🩺 Clinical Analysis\n"
@@ -83,11 +86,11 @@ def generate_offline_fallback(message: str, search_results: List[Dict[str, Any]]
             "> Please enter a more detailed symptom description (e.g. 'Patient has shivering, fever fluctuating during the day, dry lips, headache' or 'Joint stiffness, swelling in knees, severe pain').\n"
         )
         if error_msg:
-            response_text += f"\n> [!WARNING]\n> **Gemini API Call Failed**: {error_msg}\n> *Local offline search fallback triggered.*"
+            response_text += f"\n> [!WARNING]\n> **{provider_name} API Call Failed**: {error_msg}\n> *Local offline search fallback triggered.*"
         else:
             response_text += (
                 f"\n> [!NOTE]\n"
-                f"> **Gemini API Key Missing**: You are currently in offline preview mode. To unlock interactive conversational analysis, please set the GEMINI_API_KEY environment variable on your system or place it in a `.env` file in the backend directory."
+                f"> **{provider_name} API Key Missing**: You are currently in offline preview mode. To unlock interactive conversational analysis, please set the {key_name} environment variable on your system or place it in a `.env` file in the backend directory."
             )
         return response_text
 
@@ -129,11 +132,11 @@ def generate_offline_fallback(message: str, search_results: List[Dict[str, Any]]
     )
 
     if error_msg:
-        mock_response += f"\n> [!WARNING]\n> **Gemini API Call Failed**: {error_msg}\n> *Fallen back to local search engine results.*"
+        mock_response += f"\n> [!WARNING]\n> **{provider_name} API Call Failed**: {error_msg}\n> *Fallen back to local search engine results.*"
     else:
         mock_response += (
             f"\n> [!NOTE]\n"
-            f"> **Gemini API Key Missing**: You are currently in offline preview mode. To unlock interactive conversational analysis, please set the GEMINI_API_KEY environment variable on your system or place it in a `.env` file in the backend directory."
+            f"> **{provider_name} API Key Missing**: You are currently in offline preview mode. To unlock interactive conversational analysis, please set the {key_name} environment variable on your system or place it in a `.env` file in the backend directory."
         )
     return mock_response
 
@@ -190,7 +193,7 @@ async def chat_diagnose(req: ChatRequest):
 
     # If no api key is present and provider is gemini/groq/openrouter, trigger offline fallback
     if provider == "gemini" and not api_key:
-        fallback_text = generate_offline_fallback(req.message, search_results)
+        fallback_text = generate_offline_fallback(req.message, search_results, provider=provider)
         return {
             "response": fallback_text,
             "retrieved_diseases": search_results,
@@ -230,7 +233,7 @@ async def chat_diagnose(req: ChatRequest):
                     "offline_mode": False
                 }
         except Exception as e:
-            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=f"Ollama local error: {str(e)}")
+            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=f"Ollama local error: {str(e)}", provider=provider)
             return {
                 "response": fallback_text,
                 "retrieved_diseases": search_results,
@@ -291,7 +294,7 @@ async def chat_diagnose(req: ChatRequest):
                 except Exception:
                     pass
             print(f"Provider {provider.upper()} call failed: {error_details}")
-            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=f"{provider.upper()} API error: {error_details}")
+            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=f"{provider.upper()} API error: {error_details}", provider=provider)
             return {
                 "response": fallback_text,
                 "retrieved_diseases": search_results,
@@ -326,7 +329,7 @@ async def chat_diagnose(req: ChatRequest):
                 "offline_mode": False
             }
         except Exception as e:
-            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=str(e))
+            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=str(e), provider=provider)
             return {
                 "response": fallback_text,
                 "retrieved_diseases": search_results,
