@@ -135,13 +135,17 @@ def generate_offline_fallback(message: str, search_results: List[Dict[str, Any]]
             f"\n> [!NOTE]\n"
             f"> **Gemini API Key Missing**: You are currently in offline preview mode. To unlock interactive conversational analysis, please set the GEMINI_API_KEY environment variable on your system or place it in a `.env` file in the backend directory."
         )
-        
     return mock_response
 
 @app.post("/api/chat")
 async def chat_diagnose(req: ChatRequest):
-    # Determine which API key to use
+    # Determine LLM Provider
+    provider = os.environ.get("LLM_PROVIDER", "gemini").lower()
     api_key = req.api_key or os.environ.get("GEMINI_API_KEY")
+    
+    # Auto-detect Groq keys from client input
+    if req.api_key and req.api_key.startswith("gsk_"):
+        provider = "groq"
     
     # Run RAG Search to get relevant disease files
     search_results = search_engine.search(req.message, top_n=3)
@@ -183,17 +187,9 @@ async def chat_diagnose(req: ChatRequest):
         "### 🥣 Pathya / Apathya Guidelines\n"
         "### 📚 Classical Excerpts & References\n"
     )
-    
-    # Build complete prompt
-    prompt = (
-        f"{system_prompt}\n\n"
-        f"--- CLINICAL CONTEXT ---\n"
-        f"{context_str}\n"
-        f"--- END CLINICAL CONTEXT ---\n\n"
-        f"Patient Case Description: {req.message}\n"
-    )
 
-    if not api_key:
+    # If no api key is present and provider is gemini/groq/openrouter, trigger offline fallback
+    if provider == "gemini" and not api_key:
         fallback_text = generate_offline_fallback(req.message, search_results)
         return {
             "response": fallback_text,
@@ -201,34 +197,141 @@ async def chat_diagnose(req: ChatRequest):
             "offline_mode": True
         }
     
-    # Call Gemini API
-    try:
-        genai.configure(api_key=api_key)
-        # We can use 'gemini-2.5-flash' for fast and accurate responses
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
-        # Build chat history for Gemini API
-        contents = []
-        for msg in req.history:
-            role = "user" if msg.role == "user" else "model"
-            contents.append({"parts": [{"text": msg.content}], "role": role})
+    # 1. LOCAL OLLAMA PROVIDER (Zero Cost, Offline, No Keys)
+    if provider == "ollama":
+        try:
+            import urllib.request
+            messages = [
+                {"role": "system", "content": system_prompt + "\n\n--- CLINICAL CONTEXT ---\n" + context_str + "\n--- END CLINICAL CONTEXT ---"}
+            ]
+            for msg in req.history:
+                messages.append({"role": "user" if msg.role == "user" else "assistant", "content": msg.content})
+            messages.append({"role": "user", "content": req.message})
+
+            ollama_url = os.environ.get("OLLAMA_URL", "http://localhost:11434/api/chat")
+            payload = {
+                "model": os.environ.get("OLLAMA_MODEL", "llama3"),
+                "messages": messages,
+                "stream": False
+            }
             
-        # Append current prompt
-        contents.append({"parts": [{"text": prompt}], "role": "user"})
-        
-        response = model.generate_content(contents)
-        return {
-            "response": response.text,
-            "retrieved_diseases": search_results,
-            "offline_mode": False
-        }
-    except Exception as e:
-        fallback_text = generate_offline_fallback(req.message, search_results, error_msg=str(e))
-        return {
-            "response": fallback_text,
-            "retrieved_diseases": search_results,
-            "offline_mode": True
-        }
+            headers = {"Content-Type": "application/json"}
+            url_req = urllib.request.Request(
+                ollama_url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers=headers,
+                method="POST"
+            )
+            with urllib.request.urlopen(url_req, timeout=30) as response:
+                res = json.loads(response.read().decode("utf-8"))
+                return {
+                    "response": res["message"]["content"],
+                    "retrieved_diseases": search_results,
+                    "offline_mode": False
+                }
+        except Exception as e:
+            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=f"Ollama local error: {str(e)}")
+            return {
+                "response": fallback_text,
+                "retrieved_diseases": search_results,
+                "offline_mode": True
+            }
+
+    # 2. FREE/LOW COST CLOUD PROVIDERS (Groq, OpenRouter) via standard HTTPS Request
+    elif provider in ("groq", "openrouter"):
+        try:
+            import urllib.request
+            messages = [
+                {"role": "system", "content": system_prompt + "\n\n--- CLINICAL CONTEXT ---\n" + context_str + "\n--- END CLINICAL CONTEXT ---"}
+            ]
+            for msg in req.history:
+                messages.append({"role": "user" if msg.role == "user" else "assistant", "content": msg.content})
+            messages.append({"role": "user", "content": req.message})
+
+            if provider == "groq":
+                url = "https://api.groq.com/openai/v1/chat/completions"
+                auth_key = req.api_key or os.environ.get("GROQ_API_KEY")
+                model_name = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
+            else: # openrouter
+                url = "https://openrouter.ai/api/v1/chat/completions"
+                auth_key = os.environ.get("OPENROUTER_API_KEY")
+                model_name = os.environ.get("OPENROUTER_MODEL", "google/gemma-2-9b-it:free")
+
+            if not auth_key:
+                raise ValueError(f"Missing API Key for provider: {provider.upper()}")
+
+            payload = {
+                "model": model_name,
+                "messages": messages
+            }
+            
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {auth_key}",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+            url_req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers=headers,
+                method="POST"
+            )
+            with urllib.request.urlopen(url_req, timeout=30) as response:
+                res = json.loads(response.read().decode("utf-8"))
+                return {
+                    "response": res["choices"][0]["message"]["content"],
+                    "retrieved_diseases": search_results,
+                    "offline_mode": False
+                }
+        except Exception as e:
+            error_details = str(e)
+            if hasattr(e, "read"):
+                try:
+                    error_details += " - " + e.read().decode("utf-8")
+                except Exception:
+                    pass
+            print(f"Provider {provider.upper()} call failed: {error_details}")
+            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=f"{provider.upper()} API error: {error_details}")
+            return {
+                "response": fallback_text,
+                "retrieved_diseases": search_results,
+                "offline_mode": True
+            }
+
+    # 3. STANDARD GEMINI PROVIDER (Default)
+    else:
+        # Build complete prompt
+        prompt = (
+            f"{system_prompt}\n\n"
+            f"--- CLINICAL CONTEXT ---\n"
+            f"{context_str}\n"
+            f"--- END CLINICAL CONTEXT ---\n\n"
+            f"Patient Case Description: {req.message}\n"
+        )
+        try:
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-2.5-flash')
+            
+            contents = []
+            for msg in req.history:
+                role = "user" if msg.role == "user" else "model"
+                contents.append({"parts": [{"text": msg.content}], "role": role})
+                
+            contents.append({"parts": [{"text": prompt}], "role": "user"})
+            
+            response = model.generate_content(contents)
+            return {
+                "response": response.text,
+                "retrieved_diseases": search_results,
+                "offline_mode": False
+            }
+        except Exception as e:
+            fallback_text = generate_offline_fallback(req.message, search_results, error_msg=str(e))
+            return {
+                "response": fallback_text,
+                "retrieved_diseases": search_results,
+                "offline_mode": True
+            }
 
 if __name__ == "__main__":
     import uvicorn
