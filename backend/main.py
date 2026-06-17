@@ -33,7 +33,7 @@ if os.path.exists(api_txt_path):
     except Exception as e:
         print(f"Error reading api.txt: {e}")
 
-app = FastAPI(title="NIdan_bot API", description="Ayurvedic Diagnostics RAG & Chatbot Backend")
+app = FastAPI(title="NIdan_bot API", description="Ayurvedic Diagnostics & AI Chatbot Backend")
 
 # Enable CORS for the frontend dev server
 app.add_middleware(

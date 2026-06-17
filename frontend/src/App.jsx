@@ -327,7 +327,7 @@ function App() {
           <div className="logo-icon">न</div>
           <div className="logo-text">
             <h1>NIdan_bot</h1>
-            <span>Madhava Nidana Clinical RAG System</span>
+            <span>Madhava Nidana Clinical AI Chatbot</span>
           </div>
         </div>
         <div className="header-right">
@@ -478,14 +478,14 @@ function App() {
                   <h2>Clinical Decision Support</h2>
                   <p>
                     Enter patient symptoms or select a classical case profile, then click <strong>Perform Differential Nidana</strong>. 
-                    The clinical RAG assistant will cross-reference the symptoms with classical scriptures to formulate diagnostic proposals.
+                    The clinical AI chatbot will cross-reference the symptoms with classical scriptures to formulate diagnostic proposals.
                   </p>
                 </div>
               ) : (
                 chatHistory.map((msg, idx) => (
                   <div key={idx} className={`message-bubble ${msg.role}`}>
                     <div className="message-avatar">
-                      {msg.role === 'user' ? 'Clinical Practitioner' : 'Madhava RAG Specialist'}
+                      {msg.role === 'user' ? 'Clinical Practitioner' : 'Madhava AI Chatbot'}
                     </div>
                     <div className="message-content">
                       {msg.role === 'user' ? msg.content : renderMarkdown(msg.content)}
@@ -495,7 +495,7 @@ function App() {
               )}
               {loading && chatHistory.length > 0 && chatHistory[chatHistory.length - 1].role === 'user' && (
                 <div className="message-bubble assistant">
-                  <div className="message-avatar">Madhava RAG Specialist</div>
+                  <div className="message-avatar">Madhava AI Chatbot</div>
                   <div className="loading-spinner" style={{ borderColor: 'var(--color-gold)', borderTopColor: 'transparent', width: '20px', height: '20px' }}></div>
                 </div>
               )}
