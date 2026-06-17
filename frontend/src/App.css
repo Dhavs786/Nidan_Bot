@@ -247,8 +247,10 @@
 .case-textarea {
   width: 100%;
   height: 250px;
+  min-height: 250px;
+  flex-shrink: 0;
   padding: 18px;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   background: #ffffff !important;
   border: 2px solid var(--color-gold);
   color: #1d2521;
