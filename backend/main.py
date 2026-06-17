@@ -206,14 +206,15 @@ async def chat_diagnose(req: ChatRequest):
     # System prompt for clinical diagnostics
     system_prompt = (
         "You are an expert Ayurvedic Clinical Diagnostic Assistant. Your task is to analyze the patient's symptoms described by the doctor, "
-        "cross-reference them with the classical disease profiles from Madhava Nidana provided in the context, and generate a structured clinical report.\n\n"
+        "cross-reference them with the classical disease profiles from Madhava Nidana provided in the context, and generate a highly structured clinical report.\n\n"
         "RULES:\n"
         "1. Prioritize diseases from the provided context. Show matching symptoms clearly.\n"
         "2. Keep Sanskrit terms exact.\n"
-        "3. Provide a clear differential diagnosis with confidence levels (High, Medium, Low).\n"
-        "4. Recommend Pathya (do's) and Apathya (don'ts) based on the matching diseases.\n"
+        "3. Provide a clear differential diagnosis with confidence levels (High, Medium, Low) in a neat bulleted list or table.\n"
+        "4. Recommend Pathya (do's) and Apathya (don'ts) based on the matching diseases using clear list items.\n"
         "5. Explain the Samprapti (pathogenesis) of the primary suspect disease based on the text.\n"
-        "6. If you cannot find a strong match, state it clearly. Do not make up external information.\n\n"
+        "6. If you cannot find a strong match, state it clearly. Do not make up external information.\n"
+        "7. Structure all paragraphs, avoid huge blocks of text, use bolding for readability, and separate sections with blank lines.\n\n"
         "Format your response in beautiful markdown with clinical headers like:\n"
         "### 🩺 Clinical Analysis\n"
         "### 📋 Differential Diagnoses\n"
@@ -285,7 +286,7 @@ async def chat_diagnose(req: ChatRequest):
             if provider == "groq":
                 url = "https://api.groq.com/openai/v1/chat/completions"
                 auth_key = req.api_key or os.environ.get("GROQ_API_KEY")
-                model_name = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
+                model_name = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
             else: # openrouter
                 url = "https://openrouter.ai/api/v1/chat/completions"
                 auth_key = os.environ.get("OPENROUTER_API_KEY")
